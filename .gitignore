@@ -1,0 +1,32 @@
+# Data, build, binary, resources, theory directories
+data
+build
+bin
+resources
+
+# Swap files
+*.swp
+*.swo
+*~
+#*#
+
+# Glog log files
+*.log*
+*.INFO
+
+# OSX dir files
+.DS_store
+
+# Compiled object files
+*.slo
+*.lo
+*.o
+
+# Compiled dynamic and static libraries
+*.so
+*.dylib
+*.la
+*.a
+
+# python compiled files
+*.pyc
