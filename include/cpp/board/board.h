@@ -35,46 +35,48 @@
  */
 /////////////////////////////////////////////////////////////////////////////
 //
-// Defines a generic chess piece. A Piece knows it's position (Square) on the
-// board, so that it can generate a list of valid Moves.
+// Defines a chess board, implemented as a collection of Pieces.
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef DUMBO_BOARD_PIECE_H
-#define DUMBO_BOARD_PIECE_H
+#ifndef DUMBO_BOARD_BOARD_H
+#define DUMBO_BOARD_BOARD_H
 
+#include <board/pawn.h>
 #include <board/square.h>
+#include <board/piece.h>
+#include <board/pawn.h>
+#include <board/knight.h>
+#include <board/bishop.h>
+#include <board/rook.h>
+#include <board/queen.h>
+#include <board/king.h>
 
 #include <glog/logging.h>
-#include <vector>
+#include <unordered_set>
 #include <memory>
 
 namespace dumbo {
-  typedef enum color {WHITE, BLACK} Color;
-
-  class Piece {
+  class Board {
   public:
-    typedef std::shared_ptr<Piece> Ptr;
-    typedef std::shared_ptr<const Piece> ConstPtr;
+    typedef std::shared_ptr<Board> Ptr;
+    typedef std::shared_ptr<const Board> ConstPtr;
 
-    Piece(Square square, Color color) : square_(square), color_(color) {}
-    ~Piece() {}
+    // Initialize a new board.
+    Board();
+    ~Board() {}
 
-    // Set and retrieve location on the board.
-    void SetSquare(const Square& square) { square_ = square; }
-    const Square& GetSquare() { return square_; }
+    // Move the given Piece to the specified square if legal. Perform capture if
+    // appropriate.
+    bool Move(const Piece& piece, const Square& square);
 
-    // Populates the given vector with all valid moves this Piece can make.
-    // This does not need to check if the move is actually possible given the board
-    // state. That will be done by the Board.
-    virtual void GetMoves(std::vector<Square>& moves) const = 0;
+    // Check if there is a piece of the specified color at the given square.
+    bool HasPiece(const Square& square, Color color);
 
-  protected:
-    // Current location of this Piece on the board.
-    Square square_;
-
-    // Color. Which player owns this Piece?
-    Color color_;
+  private:
+    // Lists of all pieces.
+    std::unordered_set<Piece> white_pieces_;
+    std::unordered_set<Piece> black_pieces_;
   }; // class Piece
 } // namespace dumbo
 

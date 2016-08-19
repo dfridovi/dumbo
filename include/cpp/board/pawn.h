@@ -35,47 +35,33 @@
  */
 /////////////////////////////////////////////////////////////////////////////
 //
-// Defines a generic chess piece. A Piece knows it's position (Square) on the
-// board, so that it can generate a list of valid Moves.
+// Defines a Pawn, which is derived from the Piece class.
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef DUMBO_BOARD_PIECE_H
-#define DUMBO_BOARD_PIECE_H
+#ifndef DUMBO_BOARD_PAWN_H
+#define DUMBO_BOARD_PAWN_H
 
-#include <board/square.h>
-
-#include <glog/logging.h>
-#include <vector>
-#include <memory>
+#include <board/piece.h>
 
 namespace dumbo {
-  typedef enum color {WHITE, BLACK} Color;
-
-  class Piece {
+  class Pawn : public Piece {
   public:
-    typedef std::shared_ptr<Piece> Ptr;
-    typedef std::shared_ptr<const Piece> ConstPtr;
-
-    Piece(Square square, Color color) : square_(square), color_(color) {}
-    ~Piece() {}
-
-    // Set and retrieve location on the board.
-    void SetSquare(const Square& square) { square_ = square; }
-    const Square& GetSquare() { return square_; }
-
     // Populates the given vector with all valid moves this Piece can make.
-    // This does not need to check if the move is actually possible given the board
-    // state. That will be done by the Board.
-    virtual void GetMoves(std::vector<Square>& moves) const = 0;
+    void GetMoves(std::vector<Square>& moves, Board* board) const {
+      moves.clear();
 
-  protected:
-    // Current location of this Piece on the board.
-    Square square_;
+      // Unpack this piece's square.
+      unsigned char rank = square_.rank_;
+      unsigned char file = square_.file_;
 
-    // Color. Which player owns this Piece?
-    Color color_;
-  }; // class Piece
+      // Single push.
+      if (color_ == WHITE && rank < 7) {
+        Square sq(rank + 1, file);
+      }
+    }
+
+  }; // class Pawn
 } // namespace dumbo
 
 #endif
