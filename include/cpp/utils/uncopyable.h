@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, The Regents of the University of California (Regents).
+ * Copyright (c) 2018, David Fridovich-Keil.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,51 +31,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * Please contact the author(s) of this library if you have any questions.
- * Authors:       David Fridovich-Keil   ( dfk@eecs.berkeley.edu )
+ * Authors: David Fridovich-Keil   ( david.fridovichkeil@gmail.com )
  */
-/////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
 //
-// Defines a generic chess piece. A Piece knows it's position (Square) on the
-// board, so that it can generate a list of valid Moves.
+// Base class for uncopyable classes.
 //
-/////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-#ifndef DUMBO_BOARD_PIECE_H
-#define DUMBO_BOARD_PIECE_H
-
-#include <board/square.h>
-
-#include <glog/logging.h>
-#include <vector>
-#include <memory>
+#ifndef DUMBO_UTILS_UNCOPYABLE_H
+#define DUMBO_UTILS_UNCOPYABLE_H
 
 namespace dumbo {
-  typedef enum color {WHITE, BLACK} Color;
 
-  class Piece {
-  public:
-    typedef std::shared_ptr<Piece> Ptr;
-    typedef std::shared_ptr<const Piece> ConstPtr;
+class Uncopyable {
+protected:
+  Uncopyable() {}
+  ~Uncopyable() {}
 
-    Piece(Square square, Color color) : square_(square), color_(color) {}
-    ~Piece() {}
+private:
+  // Declare (but do not define) copy constructor and copy-assign operator
+  // so that child classes are not copyable.
+  Uncopyable(const Uncopyable& other);
+  Uncopyable& operator=(const Uncopyable& other);
+};
 
-    // Set and retrieve location on the board.
-    void SetSquare(const Square& square) { square_ = square; }
-    const Square& GetSquare() { return square_; }
-
-    // Populates the given vector with all valid moves this Piece can make.
-    // This does not need to check if the move is actually possible given the board
-    // state. That will be done by the Board.
-    virtual void GetMoves(std::vector<Square>& moves) const = 0;
-
-  protected:
-    // Current location of this Piece on the board.
-    Square square_;
-
-    // Color. Which player owns this Piece?
-    Color color_;
-  }; // class Piece
-} // namespace dumbo
+} //\namespace dumbo
 
 #endif

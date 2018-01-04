@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, The Regents of the University of California (Regents).
+ * Copyright (c) 2018, David Fridovich-Keil.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,37 +31,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * Please contact the author(s) of this library if you have any questions.
- * Authors:       David Fridovich-Keil   ( dfk@eecs.berkeley.edu )
+ * Authors: David Fridovich-Keil   ( david.fridovichkeil@gmail.com )
  */
-/////////////////////////////////////////////////////////////////////////////
-//
-// Defines a Pawn, which is derived from the Piece class.
-//
-/////////////////////////////////////////////////////////////////////////////
 
-#ifndef DUMBO_BOARD_PAWN_H
-#define DUMBO_BOARD_PAWN_H
+///////////////////////////////////////////////////////////////////////////////
+//
+// User-defined typedefs.
+//
+///////////////////////////////////////////////////////////////////////////////
 
-#include <board/piece.h>
+#ifndef DUMBO_UTILS_TYPES_H
+#define DUMBO_UTILS_TYPES_H
 
 namespace dumbo {
-  class Pawn : public Piece {
-  public:
-    // Populates the given vector with all valid moves this Piece can make.
-    void GetMoves(std::vector<Square>& moves, Board* board) const {
-      moves.clear();
 
-      // Unpack this piece's square.
-      unsigned char rank = square_.rank_;
-      unsigned char file = square_.file_;
+  // Color, either white or black.
+  typedef enum color { WHITE, BLACK } Color;
 
-      // Single push.
-      if (color_ == WHITE && rank < 7) {
-        Square sq(rank + 1, file);
-      }
-    }
+  // Pieces.
+  typedef enum piece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN } Piece;
 
-  }; // class Pawn
-} // namespace dumbo
+} //\namespace dumbo
 
 #endif

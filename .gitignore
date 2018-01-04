@@ -4,11 +4,13 @@ build
 bin
 resources
 
+# Emacs stuff
+.clang_complete
+
 # Swap files
 *.swp
 *.swo
 *~
-#*#
 
 # Glog log files
 *.log*

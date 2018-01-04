@@ -39,54 +39,45 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef DUMBO_BOARD_BOARD_H
-#define DUMBO_BOARD_BOARD_H
-
-#include <board/square.h>
-#include <utils/types.h>
-
-#include <glog/logging.h>
-#include <unordered_set>
-#include <unordered_map>
-#include <list>
-#include <memory>
+#include <board/board.h>
 
 namespace dumbo {
 
-class Board {
-public:
-  ~Board() {}
-  explicit Board();
+// Return the set of possible Boards resulting from the next player's move.
+std::list<const Board> Board::Options() const {
+  // TODO!
+  return std::list<const Board>();
+}
 
-  // Return the set of possible Boards resulting from the next player's move.
-  std::list<const Board> Options() const;
+// Lists of possible moves for each type of piece.
+std::list<Square> Board::KingMoves(const Square& square) const {
+  // TODO!
+  return std::list<Square>();
+}
 
-private:
-  // Check if the given square is occupied.
-  inline bool IsOccupied(const Square& square) const {
-    if (white_pieces_.count(square) == 0 &&
-        black_pieces_.count(square) == 0)
-      return false;
+std::list<Square> Board::QueenMoves(const Square& square) const {
+  // TODO!
+  return std::list<Square>();
+}
 
-    return true;
-  }
+std::list<Square> Board::BishopMoves(const Square& square) const {
+  // TODO!
+  return std::list<Square>();
+}
 
-  // Lists of possible moves for each type of piece.
-  std::list<Square> KingMoves(const Square& square) const;
-  std::list<Square> QueenMoves(const Square& square) const;
-  std::list<Square> BishopMoves(const Square& square) const;
-  std::list<Square> KnightMoves(const Square& square) const;
-  std::list<Square> RookMoves(const Square& square) const;
-  std::list<Square> PawnMoves(const Square& square) const;
+std::list<Square> Board::KnightMoves(const Square& square) const {
+  // TODO!
+  return std::list<Square>();
+}
 
-  // Hash tables storing pieces and their locations.
-  std::unordered_map<Square, Piece, Square::Hash> white_pieces_;
-  std::unordered_map<Square, Piece, Square::Hash> black_pieces_;
+std::list<Square> Board::RookMoves(const Square& square) const {
+  // TODO!
+  return std::list<Square>();
+}
 
-  // Who's turn is it next?
-  Color turn_;
-}; // class Board
+std::list<Square> Board::PawnMoves(const Square& square) const {
+  // TODO!
+  return std::list<Square>();
+}
 
 } // namespace dumbo
-
-#endif
