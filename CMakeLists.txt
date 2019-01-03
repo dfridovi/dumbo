@@ -28,10 +28,10 @@ endif(NOT CMAKE_BUILD_TYPE)
 add_subdirectory(external)
 
 # Add the source directories to the search path so cmake can find our headers.
-include_directories(${CMAKE_SOURCE_DIR}/include/cpp/)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # Collect source files and build the dumbo object.
-file(GLOB_RECURSE dumbo_srcs ${CMAKE_SOURCE_DIR}/src/cpp/*.cpp)
+file(GLOB_RECURSE dumbo_srcs ${CMAKE_SOURCE_DIR}/src/*.cpp)
 add_library(dumbo ${dumbo_srcs})
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/cpp/ DESTINATION include/dumbo)
