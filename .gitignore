@@ -6,6 +6,7 @@ resources
 
 # Emacs stuff
 .clang_complete
+cscope*
 
 # Swap files
 *.swp
