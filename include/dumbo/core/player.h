@@ -36,62 +36,71 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all game states.
+// Generic game playing client. Manages game from initial board configuration
+// to final result. Templated on move type M, game state type G.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef DUMBO_CORE_GAME_STATE_H
-#define DUMBO_CORE_GAME_STATE_H
+#ifndef DUMBO_CORE_PLAYER_H
+#define DUMBO_CORE_PLAYER_H
 
+#include <dumbo/core/game_state.h>
 #include <dumbo/core/move.h>
+#include <dumbo/core/solver.h>
 
+#include <glog/logging.h>
+#include <iostream>
 #include <memory>
-#include <random>
 
 namespace dumbo {
 namespace core {
 
-template <typename M>
-class GameState {
+template <typename M, typename G>
+class Player {
  public:
-  virtual ~GameState() {}
+  ~Player() {}
+  Player(const G& initial_state, std::unique_ptr<Solver<M, G>> solver)
+      : state_(initial_state), solver_(std::move(solver)) {
+    CHECK_NOTNULL(solver_.get());
+  }
 
-  // Enumerate all legal moves from this game state.
-  virtual std::vector<M> LegalMoves() const = 0;
+  // Play out the rest of the game.
+  void Play();
 
-  // Choose a random move from this game state.
-  virtual M RandomMove() const = 0;
+ private:
+  // Current state of the game.
+  G state_;
 
-  // Populate the GameState that occurs when the current player plays
-  // the given move. Returns whether or not the move was legal.
-  virtual bool NextState(const M& move, GameState* next_state) const = 0;
+  // Solver.
+  std::unique_ptr<Solver<M, G>> solver_;
+};  //\class Player
 
-  // Is this a terminal state? If so, return whether it is a win/loss/draw
-  // (encoded as 1.0/0.0/0.5).
-  virtual bool IsTerminal(double* win) const = 0;
+// ----------------------------- IMPLEMENTATION ---------------------------- //
 
-  // Check if it is the AI's turn or not.
-  bool IsMyTurn() const { return my_turn_; }
+template <typename M, typename G>
+void Player<M, G>::Play() {
+  double win = 0.0;
 
-  // Check if same as another game state.
-  virtual bool operator==(const GameState<M>& rhs) const = 0;
+  // Play until the game is over.
+  while (!state_.IsTerminal(&win)) {
+    state_.Render();
 
-  // Render.
-  virtual void Render() const = 0;
+    // If it's our move, then just play.
+    if (state_.IsMyTurn()) {
+      const M move = solver_->Run(state_);
+      // TODO!
+    }
+  }
 
- protected:
-  GameState(bool my_turn = true) : my_turn_(my_turn) {}
-
-  // Is it my turn?
-  const bool my_turn_;
-
-  // Random number generation.
-  static std::default_random_engine rng_;
-};  //\class GameState
-
-// Define static variable.
-template <typename M>
-std::default_random_engine GameState<M>::rng_;
+  // Print result.
+  state_.Render();
+  if (win < 0.5)
+    std::cout << "Congratulations! You won the game." << std::endl;
+  else if (win > 0.5)
+    std::cout << "Sorry. You lost the game." << std::endl;
+  else
+    std::cout << "Tie game." << std::endl;
+}
 
 }  // namespace core
 }  // namespace dumbo

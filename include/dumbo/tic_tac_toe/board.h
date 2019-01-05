@@ -91,51 +91,8 @@ class Board : public core::GameState<Square> {
 
   // Set of possible winning and losing three-in-a-rows.
   typedef std::tuple<Square, Square, Square> SquareTuple;
-  static const std::vector<SquareTuple> winning_sets_ = {
-      // Rows.
-      std::make_tuple(Square{0, 0, true}, Square{0, 1, true},
-                      Square{0, 2, true}),
-      std::make_tuple(Square{1, 0, true}, Square{1, 1, true},
-                      Square{1, 2, true}),
-      std::make_tuple(Square{2, 0, true}, Square{2, 1, true},
-                      Square{2, 2, true}),
-
-      // Columns.
-      std::make_tuple(Square{0, 0, true}, Square{1, 0, true},
-                      Square{2, 0, true}),
-      std::make_tuple(Square{0, 1, true}, Square{1, 1, true},
-                      Square{2, 1, true}),
-      std::make_tuple(Square{0, 2, true}, Square{1, 2, true},
-                      Square{2, 2, true}),
-
-      // Diagonals.
-      std::make_tuple(Square{0, 0, true}, Square{1, 1, true},
-                      Square{2, 2, true}),
-      std::make_tuple(Square{0, 2, true}, Square{1, 1, true},
-                      Square{2, 0, true})};
-
-  static const std::vector<SquareTuple> losing_sets_ = {
-      // Rows.
-      std::make_tuple(Square{0, 0, false}, Square{0, 1, false},
-                      Square{0, 2, false}),
-      std::make_tuple(Square{1, 0, false}, Square{1, 1, false},
-                      Square{1, 2, false}),
-      std::make_tuple(Square{2, 0, false}, Square{2, 1, false},
-                      Square{2, 2, false}),
-
-      // Columns.
-      std::make_tuple(Square{0, 0, false}, Square{1, 0, false},
-                      Square{2, 0, false}),
-      std::make_tuple(Square{0, 1, false}, Square{1, 1, false},
-                      Square{2, 1, false}),
-      std::make_tuple(Square{0, 2, false}, Square{1, 2, false},
-                      Square{2, 2, false}),
-
-      // Diagonals.
-      std::make_tuple(Square{0, 0, false}, Square{1, 1, false},
-                      Square{2, 2, false}),
-      std::make_tuple(Square{0, 2, false}, Square{1, 1, false},
-                      Square{2, 0, false})};
+  static const std::vector<SquareTuple> winning_sets_;
+  static const std::vector<SquareTuple> losing_sets_;
 };  //\class Board
 
 }  // namespace tic

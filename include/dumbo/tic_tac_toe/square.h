@@ -48,6 +48,7 @@
 
 #include <stdint.h>
 #include <boost/functional/hash.hpp>
+#include <iostream>
 
 namespace dumbo {
 namespace tic {
@@ -56,6 +57,26 @@ struct Square : public core::Move {
   uint8_t row = 0;
   uint8_t col = 0;
   bool my_square = true;
+
+  // Constructor.
+  Square() {}
+  Square(uint8_t ii, uint8_t jj, bool mine)
+      : row(ii), col(jj), my_square(mine) {}
+
+  // Convert to/from text.
+  void Print(std::ostream& output) const {
+    if (my_square)
+      output << "Computer: ";
+    else
+      output << "Human: ";
+
+    output << "(" << row << ", " << col << ")";
+  }
+
+  void Load(std::istream& input) {
+    my_square = false;
+    input >> row >> col;
+  }
 
   // Equality operator.
   bool operator==(const Square& rhs) const {

@@ -57,18 +57,18 @@
 namespace dumbo {
 namespace core {
 
-template <typename M, typename S>
-class MCTS : public Solver<M, S> {
+template <typename M, typename G>
+class MCTS : public Solver<M, G> {
  public:
   ~MCTS() {}
-  MCTS(double max_time_per_move = 1.0) : Solver<M, S>(max_time_per_move) {}
+  MCTS(double max_time_per_move = 1.0) : Solver<M, G>(max_time_per_move) {}
 
   // Run the solver on the specified game state. Returns a move.
-  M Run(const S& state);
+  M Run(const G& state);
 
  private:
   struct Node {
-    S state;
+    G state;
     std::unordered_map<M, Node*> children;
     Node* parent = nullptr;
     double wins = 0.0;
@@ -91,8 +91,8 @@ class MCTS : public Solver<M, S> {
 
 // ---------------------------- IMPLEMENTATION ----------------------------- //
 
-template <typename M, typename S>
-M MCTS<M, S>::Run(const S& state) {
+template <typename M, typename G>
+M MCTS<M, G>::Run(const G& state) {
   // Start a clock.
   const auto start_time = std::chrono::high_resolution_clock::now();
 
@@ -143,7 +143,7 @@ M MCTS<M, S>::Run(const S& state) {
     while (!node->IsTerminal(&win)) {
       const M move = node->state.RandomMove();
 
-      S next_state;
+      G next_state;
       CHECK(node->state.NextState(move, &next_state));
 
       // If we've already taken this move from this node then just restart from

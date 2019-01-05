@@ -54,6 +54,45 @@
 namespace dumbo {
 namespace tic {
 
+const std::vector<Board::SquareTuple> Board::winning_sets_ = {
+    // Rows.
+    std::make_tuple(Square(0, 0, true), Square(0, 1, true), Square(0, 2, true)),
+    std::make_tuple(Square(1, 0, true), Square(1, 1, true), Square(1, 2, true)),
+    std::make_tuple(Square(2, 0, true), Square(2, 1, true), Square(2, 2, true)),
+
+    // Columns.
+    std::make_tuple(Square(0, 0, true), Square(1, 0, true), Square(2, 0, true)),
+    std::make_tuple(Square(0, 1, true), Square(1, 1, true), Square(2, 1, true)),
+    std::make_tuple(Square(0, 2, true), Square(1, 2, true), Square(2, 2, true)),
+
+    // Diagonals.
+    std::make_tuple(Square(0, 0, true), Square(1, 1, true), Square(2, 2, true)),
+    std::make_tuple(Square(0, 2, true), Square(1, 1, true),
+                    Square(2, 0, true))};
+
+const std::vector<Board::SquareTuple> Board::losing_sets_ = {
+    // Rows.
+    std::make_tuple(Square(0, 0, false), Square(0, 1, false),
+                    Square(0, 2, false)),
+    std::make_tuple(Square(1, 0, false), Square(1, 1, false),
+                    Square(1, 2, false)),
+    std::make_tuple(Square(2, 0, false), Square(2, 1, false),
+                    Square(2, 2, false)),
+
+    // Columns.
+    std::make_tuple(Square(0, 0, false), Square(1, 0, false),
+                    Square(2, 0, false)),
+    std::make_tuple(Square(0, 1, false), Square(1, 1, false),
+                    Square(2, 1, false)),
+    std::make_tuple(Square(0, 2, false), Square(1, 2, false),
+                    Square(2, 2, false)),
+
+    // Diagonals.
+    std::make_tuple(Square(0, 0, false), Square(1, 1, false),
+                    Square(2, 2, false)),
+    std::make_tuple(Square(0, 2, false), Square(1, 1, false),
+                    Square(2, 0, false))};
+
 Board::Board(const std::unordered_set<Square, Square::Hasher>& occupied_squares,
              bool my_turn)
     : GameState<Square>(my_turn), occupied_squares_(occupied_squares) {
@@ -111,10 +150,10 @@ bool Board::IsTerminal(double* win) const {
   CHECK_NOTNULL(win);
 
   // Utility for checking if the board contains a winning/losing set.
-  auto has_set = [&occupied_squares_](const SquareTuple& s) {
-    return occupied_squares_.count(std::get<0>(s)) &&
-           occupied_squares_.count(std::get<1>(s)) &&
-           occupied_squares_.count(std::get<2>(s));
+  auto has_set = [this](const SquareTuple& s) {
+    return this->occupied_squares_.count(std::get<0>(s)) &&
+           this->occupied_squares_.count(std::get<1>(s)) &&
+           this->occupied_squares_.count(std::get<2>(s));
   };
 
   // Check all winning sets.

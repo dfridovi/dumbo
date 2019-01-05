@@ -43,6 +43,8 @@
 #ifndef DUMBO_CORE_MOVE_H
 #define DUMBO_CORE_MOVE_H
 
+#include <iostream>
+
 namespace dumbo {
 namespace core {
 
@@ -50,8 +52,23 @@ class Move {
  public:
   virtual ~Move() {}
 
+  // Convert to/from text.
+  friend std::ostream& operator<<(std::ostream& output, const Move& move) {
+    move.Print(output);
+    return output;
+  }
+
+  friend std::istream& operator>>(std::istream& input, Move& move) {
+    move.Load(input);
+    return input;
+  }
+
  protected:
-  Move();
+  Move() {}
+
+  // Convert to/from text.
+  virtual void Print(std::ostream& output) const = 0;
+  virtual void Load(std::istream& input) = 0;
 };  //\class Move
 
 }  // namespace core

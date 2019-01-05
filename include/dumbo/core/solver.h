@@ -36,7 +36,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all solvers. Templated on type of move M and game state S.
+// Base class for all solvers. Templated on type of move M and game state G.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -51,13 +51,13 @@
 namespace dumbo {
 namespace core {
 
-template <typename M, typename S>
+template <typename M, typename G>
 class Solver {
  public:
   virtual ~Solver() {}
 
   // Run the solver on the specified game state. Returns a move.
-  virtual M Run(const S& state) = 0;
+  virtual M Run(const G& state) = 0;
 
  protected:
   Solver(double max_time_per_move = 1.0)
