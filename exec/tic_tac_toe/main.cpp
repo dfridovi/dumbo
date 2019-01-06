@@ -36,64 +36,43 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Base class for all game states.
+// Tic tac toe player.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef DUMBO_CORE_GAME_STATE_H
-#define DUMBO_CORE_GAME_STATE_H
+#include <dumbo/core/game_state.h>
+#include <dumbo/core/mcts.h>
+#include <dumbo/core/player.h>
+#include <dumbo/tic_tac_toe/board.h>
+#include <dumbo/tic_tac_toe/square.h>
 
-#include <dumbo/core/move.h>
+#include <glog/logging.h>
 
-#include <memory>
-#include <random>
+using dumbo::tic::Board;
+using dumbo::tic::Square;
 
-namespace dumbo {
-namespace core {
+int main(int argc, char** argv) {
+  // Set up logging.
+  const std::string log_file =
+      DUMBO_EXEC_DIR + std::string("/tic_tac_toe/out.log");
+  google::SetLogDestination(0, log_file.c_str());
+  FLAGS_logtostderr = true;
+  FLAGS_minloglevel = 1;
+  google::InitGoogleLogging(argv[0]);
 
-template <typename M>
-class GameState {
- public:
-  virtual ~GameState() {}
+  // Set up a clean board.
+  const Board empty_board;
 
-  // Enumerate all legal moves from this game state.
-  virtual std::vector<M> LegalMoves() const = 0;
+  // Set up a solver.
+  constexpr double kMaxTimePerMove = 1.0;
+  std::unique_ptr<dumbo::core::MCTS<Square, Board>> solver(
+      new dumbo::core::MCTS<Square, Board>(kMaxTimePerMove));
 
-  // Choose a random move from this game state.
-  virtual M RandomMove() const = 0;
+  // Set up game player.
+  dumbo::core::Player<Square, Board> player(empty_board, std::move(solver));
 
-  // Populate the GameState that occurs when the current player plays
-  // the given move. Returns whether or not the move was legal.
-  virtual bool NextState(const M& move, GameState* next_state) const = 0;
+  // Play.
+  player.Play();
 
-  // Is this a terminal state? If so, return whether it is a win/loss/draw
-  // (encoded as 1.0/0.0/0.5).
-  virtual bool IsTerminal(double* win) const = 0;
-
-  // Check if it is the AI's turn or not.
-  bool IsMyTurn() const { return my_turn_; }
-
-  // Check if same as another game state.
-  virtual bool operator==(const GameState<M>& rhs) const = 0;
-
-  // Render.
-  virtual void Render() const = 0;
-
- protected:
-  GameState(bool my_turn = true) : my_turn_(my_turn) {}
-
-  // Is it my turn?
-  bool my_turn_;
-
-  // Random number generation.
-  static std::default_random_engine rng_;
-};  //\class GameState
-
-// Define static variable.
-template <typename M>
-std::default_random_engine GameState<M>::rng_;
-
-}  // namespace core
-}  // namespace dumbo
-
-#endif
+  return EXIT_SUCCESS;
+}

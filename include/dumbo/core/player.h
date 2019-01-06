@@ -84,12 +84,29 @@ void Player<M, G>::Play() {
   // Play until the game is over.
   while (!state_.IsTerminal(&win)) {
     state_.Render();
+    G next_state;
 
     // If it's our move, then just play.
     if (state_.IsMyTurn()) {
       const M move = solver_->Run(state_);
-      // TODO!
+      std::cout << move << std::endl;
+
+      CHECK(state_.NextState(move, &next_state));
+    } else {
+      // Ask for a move from the human.
+      std::cout << "Please input a 0-indexed row [ENTER] and column [ENTER]."
+                << std::endl;
+
+      M move;
+      std::cin >> move;
+
+      // Try to take this move. If not legal, then ask for another move.
+      while (!state_.NextState(move, &next_state))
+        std::cout << "Illegal move. Please try again." << std::endl;
     }
+
+    // Update current board state.
+    state_ = next_state;
   }
 
   // Print result.

@@ -69,7 +69,7 @@ class MCTS : public Solver<M, G> {
  private:
   struct Node {
     G state;
-    std::unordered_map<M, Node*> children;
+    std::unordered_map<M, Node*, typename M::Hasher> children;
     Node* parent = nullptr;
     double wins = 0.0;
     double total = 0.0;
@@ -105,32 +105,29 @@ M MCTS<M, G>::Run(const G& state) {
   // Keep track of all nodes we've seen so far.
   std::vector<Node> registry = {root};
 
-  while (std::chrono::duration_cast<std::chrono::seconds>(
-             std::chrono::high_resolution_clock::now() - start_time) <
-         max_time_per_move_) {
+  while (std::chrono::duration<double>(
+             std::chrono::high_resolution_clock::now() - start_time)
+             .count() < this->max_time_per_move_) {
     // (1) Pick a node to expand.
-    auto compare_ucbs =
-        [](const Node& n1, const Node& n2) {
-          constexpr double num_stddevs = std::sqrt(2.0);
+    auto compare_ucbs = [](const Node& n1, const Node& n2) {
+      constexpr double num_stddevs = 1.414;  // std::sqrt(2.0);
 
-          // Compute UCBs for both nodes.
-          // NOTE: this is the UCT rule which may be found at
-          // https://en.wikipedia.org/wiki/Monte_Carlo_tree_search.
-          const double parent_total1 =
-              (n1.parent) ? n1.parent->total : n1.total;
-          const double ucb1 =
-              (n1.wins / n1.total) +
-              num_stddevs * std::sqrt(std::log(parent_total1) / n1.total);
+      // Compute UCBs for both nodes.
+      // NOTE: this is the UCT rule which may be found at
+      // https://en.wikipedia.org/wiki/Monte_Carlo_tree_search.
+      const double parent_total1 = (n1.parent) ? n1.parent->total : n1.total;
+      const double ucb1 =
+          (n1.wins / n1.total) +
+          num_stddevs * std::sqrt(std::log(parent_total1) / n1.total);
 
-          const double parent_total2 =
-              (n2.parent) ? n2.parent->total : n2.total;
-          const double ucb2 =
-              (n2.wins / n2.total) +
-              num_stddevs * std::sqrt(std::log(parent_total2) / n2.total);
+      const double parent_total2 = (n2.parent) ? n2.parent->total : n2.total;
+      const double ucb2 =
+          (n2.wins / n2.total) +
+          num_stddevs * std::sqrt(std::log(parent_total2) / n2.total);
 
-          // Compare UCBs.
-          return ucb1 < ucb2;
-        }
+      // Compare UCBs.
+      return ucb1 < ucb2;
+    };
 
     // Find maximum UCB by linear search. NOTE: this could be accelerated by
     // storing in pre-sorted order.
@@ -140,7 +137,7 @@ M MCTS<M, G>::Run(const G& state) {
     // (2) Expand the node by sampling a random game trajectory.
     Node* node = &(*max_iter);
     double win = 0.0;
-    while (!node->IsTerminal(&win)) {
+    while (!node->state.IsTerminal(&win)) {
       const M move = node->state.RandomMove();
 
       G next_state;
@@ -173,30 +170,28 @@ M MCTS<M, G>::Run(const G& state) {
 
   // Ran out of time. Pick the best move in the tree.
   // NOTE: as a heuristic, choosing the move with the best LCB.
-  auto compare_lcbs =
-      [](const std::pair<M, Node*>& m1, const std::pair<M, Node*>& m2) {
-        const Node* n1 = m1.first;
-        const Node* n2 = m2.first;
-        constexpr double num_stddevs = std::sqrt(2.0);
+  auto compare_lcbs = [](const std::pair<M, Node*>& m1,
+                         const std::pair<M, Node*>& m2) {
+    const Node* n1 = m1.second;
+    const Node* n2 = m2.second;
+    constexpr double num_stddevs = 1.414;  // std::sqrt(2.0);
 
-        // Compute LCBs for both nodes.
-        // NOTE: this is the UCT rule which may be found at
-        // https://en.wikipedia.org/wiki/Monte_Carlo_tree_search.
-        const double parent_total1 =
-            (n1->parent) ? n1->parent->total : n1->total;
-        const double lcb1 =
-            (n1->wins / n1->total) -
-            num_stddevs * std::sqrt(std::log(parent_total1) / n1->total);
+    // Compute LCBs for both nodes.
+    // NOTE: this is the UCT rule which may be found at
+    // https://en.wikipedia.org/wiki/Monte_Carlo_tree_search.
+    const double parent_total1 = (n1->parent) ? n1->parent->total : n1->total;
+    const double lcb1 =
+        (n1->wins / n1->total) -
+        num_stddevs * std::sqrt(std::log(parent_total1) / n1->total);
 
-        const double parent_total2 =
-            (n2->parent) ? n2->parent->total : n2->total;
-        const double lcb2 =
-            (n2->wins / n2->total) -
-            num_stddevs * std::sqrt(std::log(parent_total2) / n2->total);
+    const double parent_total2 = (n2->parent) ? n2->parent->total : n2->total;
+    const double lcb2 =
+        (n2->wins / n2->total) -
+        num_stddevs * std::sqrt(std::log(parent_total2) / n2->total);
 
-        // Compare LCBs.
-        return lcb1 < lcb2;
-      }
+    // Compare LCBs.
+    return lcb1 < lcb2;
+  };
 
   // Root is always first element of registry.
   // NOTE: this could change if registry container changes.
