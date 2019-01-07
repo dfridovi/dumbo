@@ -75,7 +75,8 @@ class MCTS : public Solver<M, G> {
     double total = 0.0;
 
     // Update this node and all of its parents with a win/loss/draw result.
-    // Winning is encoded as 1.0, loss as 0.0, and draw as 0.5.
+    // Winning is encoded as 1.0, loss as 0.0, and draw as 0.5, and represents
+    // the result **for that player.**
     void Update(double win) {
       total += 1.0;
 
@@ -113,19 +114,21 @@ M MCTS<M, G>::Run(const G& state) {
       const std::shared_ptr<Node>& n1 = entry1.second;
       const std::shared_ptr<Node>& n2 = entry2.second;
       constexpr double kNumStddevs = 1.414;  // std::sqrt(2.0);
-      constexpr double kSmallNumber = 1e-8;
+
+      CHECK_GT(n1->total, 0.0);
+      CHECK_GT(n2->total, 0.0);
 
       // Compute UCBs for both nodes.
       // NOTE: this is the UCT rule which may be found at
       // https://en.wikipedia.org/wiki/Monte_Carlo_tree_search.
       const double parent_total1 = (n1->parent) ? n1->parent->total : n1->total;
       const double ucb1 =
-          (n1->wins / (n1->total + kSmallNumber)) +
+          (n1->wins / n1->total) +
           kNumStddevs * std::sqrt(std::log(parent_total1) / n1->total);
 
       const double parent_total2 = (n2->parent) ? n2->parent->total : n2->total;
       const double ucb2 =
-          (n2->wins / (n2->total + kSmallNumber)) +
+          (n2->wins / n2->total) +
           kNumStddevs * std::sqrt(std::log(parent_total2) / n2->total);
 
       // Compare UCBs.
@@ -134,41 +137,36 @@ M MCTS<M, G>::Run(const G& state) {
 
     // Start at the root and walk down to a leaf node, using the above
     // comparitor to choose moves for both players.
-    std::shared_ptr<Node> node = registry[0];
-
-    while (!node->children.empty()) {
-      const auto& iter =
-          (node->state.IsMyTurn())
-              ? std::max_element(node->children.begin(), node->children.end(),
-                                 compare_ucbs)
-              : std::min_element(node->children.begin(), node->children.end(),
-                                 compare_ucbs);
+    // NOTE: always use max UCB since each node stores the wins for the
+    // player whose move it is at that node.
+    std::shared_ptr<Node> node = root;
+    while (!node->children.empty() &&
+           node->children.size() == node->state.LegalMoves().size()) {
+      const auto& iter = std::max_element(node->children.begin(),
+                                          node->children.end(), compare_ucbs);
       node = iter->second;
     }
 
-    // HACK! If this is a terminal node, then just use its parent.
+    // If this is a terminal node, then just try again.
     double win = 0.0;
     if (node->state.IsTerminal(&win)) {
-      CHECK(node->parent);
-      node = node->parent;
+      VLOG(1) << "Hit a terminal leaf node. Updating and continuing.";
+      node->Update(win);
+      continue;
     }
 
-    // (2) Expand this node by adding all children.
-    for (const auto& move : node->state.LegalMoves()) {
-      std::shared_ptr<Node> expansion(new Node);
-      registry.push_back(expansion);
-
-      CHECK(node->state.NextState(move, &expansion->state));
-      expansion->parent = node;
-
-      // Add expansion as child of parent. By default this will not overwrite
-      // an existing entry with the same key (which is desired behavior).
-      node->children.emplace(move, expansion);
+    // (2) Expand the node by choosing a random move not already tried yet.
+    M move = node->state.RandomMove();
+    while (node->children.count(move)) {
+      move = node->state.RandomMove();
     }
 
-    // (2) Expand the node by choosing a random move.
-    const M move = node->state.RandomMove();
-    std::shared_ptr<Node> expansion = node->children.at(move);
+    std::shared_ptr<Node> expansion(new Node);
+    registry.emplace_back(expansion);
+
+    CHECK(node->state.NextState(move, &expansion->state));
+    expansion->parent = node;
+    node->children.emplace(move, expansion);
 
     // (3) Sample random game trajectory from the expanded node.
     G current_state = expansion->state;

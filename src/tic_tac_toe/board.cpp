@@ -109,6 +109,9 @@ Board::Board(const std::unordered_set<Square, Square::Hasher>& occupied_squares,
       if (!occupied_squares_.count(sq)) empty_squares_.emplace_back(sq);
     }
   }
+
+  // Make sure this is a valid board.
+  Check();
 }
 
 // Choose a random move from this game state.
@@ -122,9 +125,14 @@ Square Board::RandomMove() const {
 // the given move. Returns whether or not the move was legal.
 bool Board::NextState(const Square& move, GameState* next_state) const {
   CHECK_NOTNULL(next_state);
+  CHECK_EQ(move.my_square, my_turn_);
 
   // Check legality first.
-  if (occupied_squares_.count(move)) return false;
+  Square move_other_player = move;
+  move_other_player.my_square = !move.my_square;
+  if (occupied_squares_.count(move) ||
+      occupied_squares_.count(move_other_player))
+    return false;
 
   // Update next state.
   Board* next_board = static_cast<Board*>(next_state);
@@ -141,11 +149,22 @@ bool Board::NextState(const Square& move, GameState* next_state) const {
 
   // Empty squares are the same, except the implicit color needs to change.
   next_board->empty_squares_.clear();
+  bool found_matching_empty = false;
   for (const auto& empty : empty_squares_) {
-    if (empty == move) continue;
+    if (empty == move) {
+      found_matching_empty = true;
+      continue;
+    }
+
     next_board->empty_squares_.emplace_back(empty);
     next_board->empty_squares_.back().my_square = next_board->my_turn_;
   }
+
+  CHECK(found_matching_empty);
+  CHECK_EQ(next_board->empty_squares_.size(), empty_squares_.size() - 1);
+
+  // Make sure next board is valid.
+  next_board->Check();
 
   return true;
 }
@@ -224,6 +243,42 @@ void Board::Render() const {
 
     std::cout << std::endl;
   }
+}
+
+// Check to make sure this is a valid board configuration.
+void Board::Check() const {
+  // Check correct number of empty squares and occupied squares.
+  constexpr size_t kNumRows = 3;
+  CHECK_EQ(occupied_squares_.size() + empty_squares_.size(),
+           kNumRows * kNumRows);
+
+  // Check to make sure every cell is either occupied or empty.
+  auto is_occupied = [this](uint8_t ii, uint8_t jj) {
+    Square sq{ii, jj, true};
+    if (this->occupied_squares_.count(sq)) return true;
+
+    sq.my_square = false;
+    return this->occupied_squares_.count(sq) > 0;
+  };  // is_occupied
+
+  auto is_empty = [this](uint8_t ii, uint8_t jj) {
+    const Square sq{ii, jj, this->my_turn_};
+    for (const auto& empty : this->empty_squares_) {
+      if (empty == sq) return true;
+    }
+
+    return false;
+  };  // is_empty
+
+  for (uint8_t ii = 0; ii < 3; ii++) {
+    for (uint8_t jj = 0; jj < 3; jj++) {
+      if (!is_occupied(ii, jj)) CHECK(is_empty(ii, jj));
+    }
+  }
+
+  // Make sure all empty squares' turn match current turn.
+  for (const auto& empty : empty_squares_)
+    CHECK_EQ(empty.my_square, my_turn_);
 }
 
 }  // namespace tic

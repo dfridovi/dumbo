@@ -46,13 +46,18 @@
 #include <dumbo/tic_tac_toe/board.h>
 #include <dumbo/tic_tac_toe/square.h>
 
+#include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <memory>
+
+DEFINE_double(max_time_per_move, 1.0, "Maximum time (s) per move.");
 
 using dumbo::tic::Board;
 using dumbo::tic::Square;
 
 int main(int argc, char** argv) {
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
+
   // Set up logging.
   const std::string log_file =
       DUMBO_EXEC_DIR + std::string("/tic_tac_toe/out.log");
@@ -65,9 +70,8 @@ int main(int argc, char** argv) {
   const Board empty_board;
 
   // Set up a solver.
-  constexpr double kMaxTimePerMove = 1.0;
   std::unique_ptr<dumbo::core::MCTS<Square, Board>> solver(
-      new dumbo::core::MCTS<Square, Board>(kMaxTimePerMove));
+      new dumbo::core::MCTS<Square, Board>(FLAGS_max_time_per_move));
 
   // Set up game player.
   dumbo::core::Player<Square, Board> player(empty_board, std::move(solver));

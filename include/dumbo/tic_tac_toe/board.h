@@ -83,6 +83,9 @@ class Board : public core::GameState<Square> {
   void Render() const;
 
  private:
+  // Check to make sure this is a valid board configuration.
+  void Check() const;
+
   // Set of occupied and empty squares on the board. Occupied squares stored as
   // unordered set but empty squares stored as vector for efficiency of
   // legality and random selection operations.
