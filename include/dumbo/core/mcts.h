@@ -112,68 +112,67 @@ M MCTS<M, G>::Run(const G& state) {
                            const std::pair<M, std::shared_ptr<Node>>& entry2) {
       const std::shared_ptr<Node>& n1 = entry1.second;
       const std::shared_ptr<Node>& n2 = entry2.second;
-      constexpr double num_stddevs = 1.414;  // std::sqrt(2.0);
+      constexpr double kNumStddevs = 1.414;  // std::sqrt(2.0);
 
       // Compute UCBs for both nodes.
       // NOTE: this is the UCT rule which may be found at
       // https://en.wikipedia.org/wiki/Monte_Carlo_tree_search.
       const double parent_total1 = (n1->parent) ? n1->parent->total : n1->total;
       const double ucb1 =
-          (n1->wins / n1->total) +
-          num_stddevs * std::sqrt(std::log(parent_total1) / n1->total);
+          (n1->wins / (n1->total + kSmallNumber)) +
+          kNumStddevs * std::sqrt(std::log(parent_total1) / n1->total);
 
       const double parent_total2 = (n2->parent) ? n2->parent->total : n2->total;
       const double ucb2 =
-          (n2->wins / n2->total) +
-          num_stddevs * std::sqrt(std::log(parent_total2) / n2->total);
+          (n2->wins / (n2->total + kSmallNumber)) +
+          kNumStddevs * std::sqrt(std::log(parent_total2) / n2->total);
 
       // Compare UCBs.
       return ucb1 < ucb2;
-    };
+    };  // compare_ucbs
 
     // Start at the root and walk down to a leaf node, using the above
     // comparitor to choose moves for both players.
     std::shared_ptr<Node> node = registry[0];
 
     while (!node->children.empty()) {
-      const auto& iter = (node->state.IsMyTurn())
-                       ? std::max_element(node->children.begin(),
-                                          node->children.end(), compare_ucbs)
-                       : std::min_element(node->children.begin(),
-                                          node->children.end(), compare_ucbs);
+      const auto& iter =
+          (node->state.IsMyTurn())
+              ? std::max_element(node->children.begin(), node->children.end(),
+                                 compare_ucbs)
+              : std::min_element(node->children.begin(), node->children.end(),
+                                 compare_ucbs);
       node = iter->second;
     }
 
-    // (2) Expand the node by sampling a random game trajectory.
+    // HACK! If this is a terminal node, then just use its parent.
     double win = 0.0;
-    while (!node->state.IsTerminal(&win)) {
-      const M move = node->state.RandomMove();
-
-      G next_state;
-      CHECK(node->state.NextState(move, &next_state));
-
-      // If we've already taken this move from this node then just restart from
-      // the appropriate child node.
-      if (node->children.count(move)) {
-        node = node->children[move];
-        continue;
-      }
-
-      // Create a new node in the registry for the next state.
-      std::shared_ptr<Node> next_node(new Node);
-      next_node->state = next_state;
-      next_node->parent = node;
-      registry.push_back(next_node);
-
-      // Update current node's child list to include the next node.
-      node->children.emplace(move, next_node);
-
-      // Set node to next node.
-      node = next_node;
+    if (node->state.IsTerminal(&win)) {
+      CHECK(node->parent);
+      node = node->parent;
     }
 
-    // (3) Update all ancestors of terminal node.
-    node->Update(win);
+    // (2) Expand the node by choosing a random move.
+    std::shared_ptr<Node> expansion(new Node);
+    const M move = node->state.RandomMove();
+    CHECK(node->state.NextState(move, &expansion->state));
+    expansion->parent = node;
+    node->children.emplace(move, expansion);
+    registry.push_back(expansion);
+
+    // (3) Sample random game trajectory from the expanded node.
+    G current_state = expansion->state;
+    while (!current_state.IsTerminal(&win)) {
+      const M move = current_state.RandomMove();
+
+      G next_state;
+      CHECK(current_state.NextState(move, &next_state));
+
+      current_state = next_state;
+    }
+
+    // (3) Update all ancestors of leaf node.
+    expansion->Update(win);
   }
 
   // Ran out of time. Pick the best move in the tree.
