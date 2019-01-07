@@ -193,7 +193,7 @@ M MCTS<M, G>::Run(const G& state) {
   for (const auto& entry : registry[0]->children) {
     const double total_plays = entry.second->total;
     std::cout << "move: " << entry.first << " / total plays: " << total_plays
-              << std::endl;
+              << " / total wins: " << entry.second->wins << std::endl;
     if (total_plays > best_total_plays) {
       best_total_plays = total_plays;
       best_move = entry.first;
