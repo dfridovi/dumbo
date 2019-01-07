@@ -113,6 +113,7 @@ M MCTS<M, G>::Run(const G& state) {
       const std::shared_ptr<Node>& n1 = entry1.second;
       const std::shared_ptr<Node>& n2 = entry2.second;
       constexpr double kNumStddevs = 1.414;  // std::sqrt(2.0);
+      constexpr double kSmallNumber = 1e-8;
 
       // Compute UCBs for both nodes.
       // NOTE: this is the UCT rule which may be found at
@@ -152,13 +153,22 @@ M MCTS<M, G>::Run(const G& state) {
       node = node->parent;
     }
 
+    // (2) Expand this node by adding all children.
+    for (const auto& move : node->state.LegalMoves()) {
+      std::shared_ptr<Node> expansion(new Node);
+      registry.push_back(expansion);
+
+      CHECK(node->state.NextState(move, &expansion->state));
+      expansion->parent = node;
+
+      // Add expansion as child of parent. By default this will not overwrite
+      // an existing entry with the same key (which is desired behavior).
+      node->children.emplace(move, expansion);
+    }
+
     // (2) Expand the node by choosing a random move.
-    std::shared_ptr<Node> expansion(new Node);
     const M move = node->state.RandomMove();
-    CHECK(node->state.NextState(move, &expansion->state));
-    expansion->parent = node;
-    node->children.emplace(move, expansion);
-    registry.push_back(expansion);
+    std::shared_ptr<Node> expansion = node->children.at(move);
 
     // (3) Sample random game trajectory from the expanded node.
     G current_state = expansion->state;
