@@ -76,7 +76,11 @@ struct Square : public core::Move {
 
   void Load(std::istream& input) {
     my_square = false;
-    input >> row >> col;
+    unsigned int r, c;
+    input >> r >> c;
+
+    row = static_cast<uint8_t>(r);
+    col = static_cast<uint8_t>(c);
   }
 
   // Equality operator.

@@ -47,6 +47,7 @@
 #include <dumbo/tic_tac_toe/square.h>
 
 #include <glog/logging.h>
+#include <memory>
 
 using dumbo::tic::Board;
 using dumbo::tic::Square;

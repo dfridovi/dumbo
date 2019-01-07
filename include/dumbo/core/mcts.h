@@ -165,6 +165,10 @@ M MCTS<M, G>::Run(const G& state) {
 
     // (3) Update all ancestors of terminal node.
     node->Update(win);
+
+    std::cout << "Registry size: " << registry.size() << std::endl;
+    std::cout << "Root children: " << registry[0]->children.size() << std::endl;
+    std::cout << "Root empty squares: " << registry[0]->state.LegalMoves().size() << std::endl;
   }
 
   // Ran out of time. Pick the best move in the tree.
@@ -179,14 +183,12 @@ M MCTS<M, G>::Run(const G& state) {
     // NOTE: this is the UCT rule which may be found at
     // https://en.wikipedia.org/wiki/Monte_Carlo_tree_search.
     const double parent_total1 = (n1->parent) ? n1->parent->total : n1->total;
-    const double lcb1 =
-        (n1->wins / n1->total) -
-        num_stddevs * std::sqrt(std::log(parent_total1) / n1->total);
+    const double lcb1 = (n1->wins / n1->total);  //-
+    //        num_stddevs * std::sqrt(std::log(parent_total1) / n1->total);
 
     const double parent_total2 = (n2->parent) ? n2->parent->total : n2->total;
-    const double lcb2 =
-        (n2->wins / n2->total) -
-        num_stddevs * std::sqrt(std::log(parent_total2) / n2->total);
+    const double lcb2 = (n2->wins / n2->total);  // -
+    // num_stddevs * std::sqrt(std::log(parent_total2) / n2->total);
 
     // Compare LCBs.
     return lcb1 < lcb2;
@@ -194,11 +196,20 @@ M MCTS<M, G>::Run(const G& state) {
 
   // Root is always first element of registry.
   // NOTE: this could change if registry container changes.
-  const auto& max_iter = std::max_element(
-      registry[0]->children.begin(), registry[0]->children.end(), compare_lcbs);
+  double best_total_plays = 0.0;
+  M best_move;
+  for (const auto& entry : registry[0]->children) {
+    const double total_plays = entry.second->total;
+    std::cout << "move: " << entry.first << " / total plays: " << total_plays
+              << std::endl;
+    if (total_plays > best_total_plays) {
+      best_total_plays = total_plays;
+      best_move = entry.first;
+    }
+  }
 
   // Return just the chosen move.
-  return max_iter->first;
+  return best_move;
 }
 
 }  // namespace core

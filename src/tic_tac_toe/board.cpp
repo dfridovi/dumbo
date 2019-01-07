@@ -212,13 +212,13 @@ void Board::Render() const {
       sq.col = jj;
       sq.my_square = true;
       if (occupied_squares_.count(sq))
-        std::cout << " X ";
+        std::cout << " X |";
       else {
         sq.my_square = false;
         if (occupied_squares_.count(sq))
-          std::cout << " O ";
+          std::cout << " O |";
         else
-          std::cout << "   ";
+          std::cout << "   |";
       }
     }
 
