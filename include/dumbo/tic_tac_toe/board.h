@@ -56,7 +56,7 @@ namespace tic {
 class Board : public core::GameState<Square> {
  public:
   ~Board() {}
-  Board(bool my_turn = true) : GameState<Square>(my_turn) {}
+  Board(bool my_turn = true) : Board({}, my_turn) {}
   Board(const std::unordered_set<Square, Square::Hasher>& occupied_squares,
         bool my_turn = true);
 

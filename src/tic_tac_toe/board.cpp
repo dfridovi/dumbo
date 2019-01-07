@@ -130,15 +130,21 @@ bool Board::NextState(const Square& move, GameState* next_state) const {
   Board* next_board = static_cast<Board*>(next_state);
   CHECK_NOTNULL(next_board);
 
+  // Remember to switch who's move it is!
+  next_board->my_turn_ = !my_turn_;
+
+  // Occupied squares are the same, plus the new move.
   next_board->occupied_squares_.clear();
   next_board->occupied_squares_.insert(occupied_squares_.begin(),
                                        occupied_squares_.end());
   next_board->occupied_squares_.emplace(move);
 
+  // Empty squares are the same, except the implicit color needs to change.
   next_board->empty_squares_.clear();
   for (const auto& empty : empty_squares_) {
     if (empty == move) continue;
     next_board->empty_squares_.emplace_back(empty);
+    next_board->empty_squares_.back().my_square = next_board->my_turn_;
   }
 
   return true;

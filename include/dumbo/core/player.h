@@ -88,6 +88,7 @@ void Player<M, G>::Play() {
 
     // If it's our move, then just play.
     if (state_.IsMyTurn()) {
+      std::cout << "My turn." << std::endl;
       const M move = solver_->Run(state_);
       std::cout << move << std::endl;
 

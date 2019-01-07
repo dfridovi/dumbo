@@ -70,7 +70,8 @@ struct Square : public core::Move {
     else
       output << "Human: ";
 
-    output << "(" << row << ", " << col << ")";
+    output << "(" << static_cast<unsigned int>(row) << ", "
+           << static_cast<unsigned int>(col) << ")";
   }
 
   void Load(std::istream& input) {
