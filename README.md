@@ -16,6 +16,9 @@ The main external dependencies are just for logging and command line flags. Inst
 * `gflags` (Google's C++ command line flags)
 * `boost` (general C++ toolchain)
 
+## Documentation
+Documentation is auto-generated using Doxygen and may be found [here](https://dfridovi.github.io/dumbo/documentation/html/).
+
 ## Build instructions
 As with any other `cmake` build, just download the repository and from the top directory type:
 
