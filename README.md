@@ -1,4 +1,4 @@
-# Dumbo -- Chess for Dummies
+# Dumbo
 [![Build Status](https://travis-ci.org/dfridovi/dumbo.svg?branch=master)](https://travis-ci.org/dfridovi/dumbo)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
 

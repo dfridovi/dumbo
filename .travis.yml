@@ -33,17 +33,17 @@ before_script:
   - cmake -DCMAKE_BUILD_TYPE=Release ..
 
 script:
-  - make -j4
+  - make
   - ./run_tests
 
 after_success:
-#  - make documentation
+  - make documentation
 
-#deploy:
-#  verbose: true
-#  provider: pages
-#  skip-cleanup: true
-#  github-token: $PA_TOKEN
-#  keep-history: true
-#  on:
-#    branch: master
+deploy:
+  verbose: true
+  provider: pages
+  skip-cleanup: true
+  github-token: $PA_TOKEN
+  keep-history: true
+  on:
+    branch: master
