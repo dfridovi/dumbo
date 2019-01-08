@@ -1,4 +1,5 @@
 # Dumbo -- Chess for Dummies
+[![Build Status](https://travis-ci.org/dfridovi/dumbo.svg?branch=master)](https://travis-ci.org/dfridovi/dumbo)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
 
 Why **Dumbo**? **Dumbo** is a new game engine meant for the [Dumbos](http://movies.disney.com/dumbo) among us. It is designed for first for simplicity, and second for performance. It should be easy to use and develop from, and also fun to play against.
