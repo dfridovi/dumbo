@@ -1,0 +1,49 @@
+# SSH authorization so that travis can push documentation to the repository.
+env:
+  global:
+    secure:
+
+language: cpp
+
+compiler:
+  - gcc
+  #- clang
+
+os:
+  - linux
+
+branches:
+  only:
+    - master
+
+notifications:
+  email: false
+
+install:
+  - echo $TRAVIS_OS_NAME
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install --yes build-essential
+    doxygen libgflags-dev libgoogle-glog-dev cmake; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install python-software-properties; fi
+
+before_script:
+  # Configure and make.
+  - mkdir bin
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=Release ..
+
+script:
+  - make -j4
+  - ./run_tests
+
+after_success:
+#  - make documentation
+
+#deploy:
+#  verbose: true
+#  provider: pages
+#  skip-cleanup: true
+#  github-token: $PA_TOKEN
+#  keep-history: true
+#  on:
+#    branch: master

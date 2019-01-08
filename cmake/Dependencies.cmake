@@ -2,9 +2,9 @@ include(ExternalProject)
 set(dumbo_LIBRARIES "")
 
 # Find Eigen.
-find_package( Eigen3 REQUIRED )
-include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
-list(APPEND dumbo_LIBRARIES ${EIGEN3_LIBRARIES})
+# find_package( Eigen3 REQUIRED )
+# include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+# list(APPEND dumbo_LIBRARIES ${EIGEN3_LIBRARIES})
 
 # Find Google-gflags.
 include("cmake/External/gflags.cmake")

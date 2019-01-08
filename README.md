@@ -1,20 +1,31 @@
 # Dumbo -- Chess for Dummies
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
 
-Why **Dumbo**? **Dumbo** is a new chess engine meant for the [Dumbos](http://movies.disney.com/dumbo) among us. It is designed for first for simplicity, and second for performance. It should be easy to use and develop from, and also fun to play against.
+Why **Dumbo**? **Dumbo** is a new game engine meant for the [Dumbos](http://movies.disney.com/dumbo) among us. It is designed for first for simplicity, and second for performance. It should be easy to use and develop from, and also fun to play against.
 
 ## About the author
-I've been playing chess since I was in kindergarden or so. I played tournaments all through elementary and middle school, but didn't play much through high school or college. I'm currently a third year PhD student in EECS at UC Berkeley, and since starting the program I've been getting back into the game. I am rated ~1750 in blitz on [chess.com](https://www.chess.com).
+I've been playing chess since I was in kindergarden or so, and for the last few years I've been meaning to try and build my own chess engine. This is the first step -- a generic framework for building game engines and a toy implementation for tic tac toe.
 
 ## Overview
-This repository is entirely written in C++, and is structured around the CMAKE cross-compilation paradigm. All source code is in the `src/cpp` directory.
+This repository is entirely written in C++, and is structured around the `cmake` cross-compilation paradigm.
 
-## Status
-Currently under active development. Not usable at the moment. More updates to follow.
+## Dependencies
+The main external dependencies are just for logging and command line flags. Installation should be available from your operating system's package manager.
+* `glog` (Google's C++ logging tools)
+* `gflags` (Google's C++ command line flags)
+* `boost` (general C++ toolchain)
 
 ## Build instructions
-We follow the standard CMAKE build scheme. Just download the repository and from the top directory type:
+As with any other `cmake` build, just download the repository and from the top directory type:
 
 ```bash
 mkdir build && cd build && cmake .. && make
+```
+
+## Demo
+To run the tic tac toe demo:
+
+```bash
+cd bin
+./tic_tac_toe
 ```
