@@ -103,7 +103,7 @@ M MCTS<M, G>::Run(const G& state) {
   const auto start_time = std::chrono::high_resolution_clock::now();
 
   // Root an empty tree at the initial state.
-  std::shared_ptr<Node> root(new Node);
+  std::shared_ptr<Node> root(new Node());
   root->state = state;
 
   // Keep track of all nodes we've seen so far.
