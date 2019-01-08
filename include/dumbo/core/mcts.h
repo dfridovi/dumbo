@@ -50,6 +50,7 @@
 #include <glog/logging.h>
 #include <algorithm>
 #include <chrono>
+#include <iterator>
 #include <memory>
 #include <unordered_map>
 #include <vector>
@@ -75,15 +76,17 @@ class MCTS : public Solver<M, G> {
     double total = 0.0;
 
     // Update this node and all of its parents with a win/loss/draw result.
-    // Winning is encoded as 1.0, loss as 0.0, and draw as 0.5, and represents
-    // the result **for that player.**
+    // Winning is encoded as 1.0, loss as 0.0, and draw as 0.5.
+    // The input is whether the computer won the rollout; within each node, the
+    // 'wins' variable stores the number of wins for the player who played the
+    // move immediately leading to that node.
     void Update(double win) {
       total += 1.0;
 
       if (state.IsMyTurn())
-        wins += win;
-      else
         wins += 1.0 - win;
+      else
+        wins += win;
 
       if (parent) parent->Update(win);
     }
@@ -94,13 +97,14 @@ class MCTS : public Solver<M, G> {
 
 template <typename M, typename G>
 M MCTS<M, G>::Run(const G& state) {
+  CHECK(state.IsMyTurn());
+
   // Start a clock.
   const auto start_time = std::chrono::high_resolution_clock::now();
 
   // Root an empty tree at the initial state.
   std::shared_ptr<Node> root(new Node);
   root->state = state;
-  CHECK(state.IsMyTurn());
 
   // Keep track of all nodes we've seen so far.
   std::vector<std::shared_ptr<Node>> registry = {root};
@@ -142,8 +146,8 @@ M MCTS<M, G>::Run(const G& state) {
     std::shared_ptr<Node> node = root;
     while (!node->children.empty() &&
            node->children.size() == node->state.LegalMoves().size()) {
-      const auto& iter = std::max_element(node->children.begin(),
-                                          node->children.end(), compare_ucbs);
+      auto iter = std::max_element(node->children.begin(), node->children.end(),
+                                   compare_ucbs);
       node = iter->second;
     }
 
@@ -183,23 +187,15 @@ M MCTS<M, G>::Run(const G& state) {
     expansion->Update(win);
   }
 
-  // Ran out of time. Pick the best move in the tree.
-  // Root is always first element of registry.
-  // NOTE: this could change if registry container changes.
-  double best_total_plays = 0.0;
-  M best_move;
-  for (const auto& entry : registry[0]->children) {
-    const double total_plays = entry.second->total;
-    std::cout << "move: " << entry.first << " / total plays: " << total_plays
-              << " / total wins: " << entry.second->wins << std::endl;
-    if (total_plays > best_total_plays) {
-      best_total_plays = total_plays;
-      best_move = entry.first;
-    }
-  }
-
-  // Return just the chosen move.
-  return best_move;
+  // Ran out of time. Pick the best move from the root.
+  const auto iter =
+      std::max_element(root->children.begin(), root->children.end(),
+                       [](const std::pair<M, std::shared_ptr<Node>>& entry1,
+                          const std::pair<M, std::shared_ptr<Node>>& entry2) {
+                         return entry1.second->wins / entry1.second->total <
+                                entry2.second->wins / entry2.second->total;
+                       });
+  return iter->first;
 }
 
 }  // namespace core

@@ -105,8 +105,11 @@ Board::Board(const std::unordered_set<Square, Square::Hasher>& occupied_squares,
   for (uint8_t ii = 0; ii < kGridSize; ii++) {
     for (uint8_t jj = 0; jj < kGridSize; jj++) {
       const Square sq{ii, jj, my_turn_};
+      const Square sq_other_player{ii, jj, !my_turn_};
 
-      if (!occupied_squares_.count(sq)) empty_squares_.emplace_back(sq);
+      if (!occupied_squares_.count(sq) &&
+          !occupied_squares_.count(sq_other_player))
+        empty_squares_.emplace_back(sq);
     }
   }
 
@@ -277,8 +280,7 @@ void Board::Check() const {
   }
 
   // Make sure all empty squares' turn match current turn.
-  for (const auto& empty : empty_squares_)
-    CHECK_EQ(empty.my_square, my_turn_);
+  for (const auto& empty : empty_squares_) CHECK_EQ(empty.my_square, my_turn_);
 }
 
 }  // namespace tic

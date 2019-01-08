@@ -86,12 +86,16 @@ class GameState {
   bool my_turn_;
 
   // Random number generation.
+  static std::random_device rd_;
   static std::default_random_engine rng_;
 };  //\class GameState
 
-// Define static variable.
+// Define static variables.
 template <typename M>
-std::default_random_engine GameState<M>::rng_;
+std::random_device GameState<M>::rd_;
+
+template <typename M>
+std::default_random_engine GameState<M>::rng_(GameState<M>::rd_());
 
 }  // namespace core
 }  // namespace dumbo

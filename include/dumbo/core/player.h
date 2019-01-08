@@ -103,8 +103,11 @@ void Player<M, G>::Play() {
       std::cout << move << std::endl;
 
       // Try to take this move. If not legal, then ask for another move.
-      while (!state_.NextState(move, &next_state))
+      while (!state_.NextState(move, &next_state)) {
         std::cout << "Illegal move. Please try again." << std::endl;
+        std::cin >> move;
+        std::cout << move << std::endl;
+      }
     }
 
     // Update current board state.
