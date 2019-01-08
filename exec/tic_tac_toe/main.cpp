@@ -50,7 +50,7 @@
 #include <glog/logging.h>
 #include <memory>
 
-DEFINE_double(max_time_per_move, 1.0, "Maximum time (s) per move.");
+DEFINE_double(max_time_per_move, 0.05, "Maximum time (s) per move.");
 
 using dumbo::tic::Board;
 using dumbo::tic::Square;
