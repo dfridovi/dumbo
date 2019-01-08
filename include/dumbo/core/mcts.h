@@ -165,7 +165,7 @@ M MCTS<M, G>::Run(const G& state) {
       move = node->state.RandomMove();
     }
 
-    std::shared_ptr<Node> expansion(new Node);
+    std::shared_ptr<Node> expansion(new Node());
     registry.emplace_back(expansion);
 
     CHECK(node->state.NextState(move, &expansion->state));
