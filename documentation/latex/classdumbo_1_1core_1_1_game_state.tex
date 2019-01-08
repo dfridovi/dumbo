@@ -1,0 +1,62 @@
+\hypertarget{classdumbo_1_1core_1_1_game_state}{\section{dumbo\-:\-:core\-:\-:Game\-State$<$ M $>$ Class Template Reference}
+\label{classdumbo_1_1core_1_1_game_state}\index{dumbo\-::core\-::\-Game\-State$<$ M $>$@{dumbo\-::core\-::\-Game\-State$<$ M $>$}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_a8b69e211496715e3969e5870df7428ae}{virtual std\-::vector$<$ M $>$ {\bfseries Legal\-Moves} () const =0}\label{classdumbo_1_1core_1_1_game_state_a8b69e211496715e3969e5870df7428ae}
+
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_aa23134e68598c061db73b70bfc968c35}{virtual M {\bfseries Random\-Move} () const =0}\label{classdumbo_1_1core_1_1_game_state_aa23134e68598c061db73b70bfc968c35}
+
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_a3e225cf3b0e9b396ae784612171c1035}{virtual bool {\bfseries Next\-State} (const M \&move, \hyperlink{classdumbo_1_1core_1_1_game_state}{Game\-State} $\ast$next\-\_\-state) const =0}\label{classdumbo_1_1core_1_1_game_state_a3e225cf3b0e9b396ae784612171c1035}
+
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_ac57f7f288be7ff5d1099fda47bb2e117}{virtual bool {\bfseries Is\-Terminal} (double $\ast$win) const =0}\label{classdumbo_1_1core_1_1_game_state_ac57f7f288be7ff5d1099fda47bb2e117}
+
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_ae89148286c9ae76017aec212efe393bd}{bool {\bfseries Is\-My\-Turn} () const }\label{classdumbo_1_1core_1_1_game_state_ae89148286c9ae76017aec212efe393bd}
+
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_ae244ca510aa640f97847fbaff6f2fa3d}{virtual bool {\bfseries operator==} (const \hyperlink{classdumbo_1_1core_1_1_game_state}{Game\-State}$<$ M $>$ \&rhs) const =0}\label{classdumbo_1_1core_1_1_game_state_ae244ca510aa640f97847fbaff6f2fa3d}
+
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_afad8470a5155a6a0c7ef244f1eb1ffac}{virtual void {\bfseries Render} () const =0}\label{classdumbo_1_1core_1_1_game_state_afad8470a5155a6a0c7ef244f1eb1ffac}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_a761603059309aba8469e98b9f6e517ec}{{\bfseries Game\-State} (bool my\-\_\-turn=true)}\label{classdumbo_1_1core_1_1_game_state_a761603059309aba8469e98b9f6e517ec}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_af68aa1b2b5622077801b6fee2880828a}{bool {\bfseries my\-\_\-turn\-\_\-}}\label{classdumbo_1_1core_1_1_game_state_af68aa1b2b5622077801b6fee2880828a}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_aafcc889dc70678e3a9840d1f8fd3805a}{static std\-::random\-\_\-device {\bfseries rd\-\_\-}}\label{classdumbo_1_1core_1_1_game_state_aafcc889dc70678e3a9840d1f8fd3805a}
+
+\item 
+\hypertarget{classdumbo_1_1core_1_1_game_state_a89930dde860d8e21e286106e2418609f}{static std\-::default\-\_\-random\-\_\-engine {\bfseries rng\-\_\-}}\label{classdumbo_1_1core_1_1_game_state_a89930dde860d8e21e286106e2418609f}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename M$>$class dumbo\-::core\-::\-Game\-State$<$ M $>$}
+
+
+
+Definition at line 55 of file game\-\_\-state.\-h.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+/home/travis/build/dfridovi/dumbo/include/dumbo/core/game\-\_\-state.\-h\end{DoxyCompactItemize}

@@ -1,0 +1,71 @@
+\hypertarget{classdumbo_1_1tic_1_1_board}{\section{dumbo\-:\-:tic\-:\-:Board Class Reference}
+\label{classdumbo_1_1tic_1_1_board}\index{dumbo\-::tic\-::\-Board@{dumbo\-::tic\-::\-Board}}
+}
+Inheritance diagram for dumbo\-:\-:tic\-:\-:Board\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classdumbo_1_1tic_1_1_board}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdumbo_1_1tic_1_1_board_a9b234c352e04139da4d375dcf0ce3d8e}{{\bfseries Board} (bool my\-\_\-turn=true)}\label{classdumbo_1_1tic_1_1_board_a9b234c352e04139da4d375dcf0ce3d8e}
+
+\item 
+\hypertarget{classdumbo_1_1tic_1_1_board_a1f37a5931e50d83527eba709dafc6ae5}{std\-::vector$<$ \hyperlink{structdumbo_1_1tic_1_1_square}{Square} $>$ {\bfseries Legal\-Moves} () const }\label{classdumbo_1_1tic_1_1_board_a1f37a5931e50d83527eba709dafc6ae5}
+
+\item 
+\hypertarget{classdumbo_1_1tic_1_1_board_a57b52e433e43323e558442dd09c6b7f2}{\hyperlink{structdumbo_1_1tic_1_1_square}{Square} {\bfseries Random\-Move} () const }\label{classdumbo_1_1tic_1_1_board_a57b52e433e43323e558442dd09c6b7f2}
+
+\item 
+\hypertarget{classdumbo_1_1tic_1_1_board_a7b362214b4e0018fd564298d44834e61}{bool {\bfseries Next\-State} (const \hyperlink{structdumbo_1_1tic_1_1_square}{Square} \&move, Game\-State $\ast$next\-\_\-state) const }\label{classdumbo_1_1tic_1_1_board_a7b362214b4e0018fd564298d44834e61}
+
+\item 
+\hypertarget{classdumbo_1_1tic_1_1_board_afcb179dde40eeef088cdda515da705cd}{bool {\bfseries Is\-Terminal} (double $\ast$win) const }\label{classdumbo_1_1tic_1_1_board_afcb179dde40eeef088cdda515da705cd}
+
+\item 
+\hypertarget{classdumbo_1_1tic_1_1_board_a380495a9e4113a5da8bc7ab927f37f60}{bool {\bfseries Is\-My\-Turn} () const }\label{classdumbo_1_1tic_1_1_board_a380495a9e4113a5da8bc7ab927f37f60}
+
+\item 
+\hypertarget{classdumbo_1_1tic_1_1_board_a5d5c5c7448d1451033a508486c72303b}{bool {\bfseries operator==} (const Game\-State$<$ \hyperlink{structdumbo_1_1tic_1_1_square}{Square} $>$ \&rhs) const }\label{classdumbo_1_1tic_1_1_board_a5d5c5c7448d1451033a508486c72303b}
+
+\item 
+\hypertarget{classdumbo_1_1tic_1_1_board_a844fcf752e4f9bcc2d2f43e1acbb22fe}{void {\bfseries Render} () const }\label{classdumbo_1_1tic_1_1_board_a844fcf752e4f9bcc2d2f43e1acbb22fe}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries my\-\_\-turn}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 56 of file board.\-h.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classdumbo_1_1tic_1_1_board_a1a2d7a8b6a19d97fabf37a51a31d9ff4}{\index{dumbo\-::tic\-::\-Board@{dumbo\-::tic\-::\-Board}!my\-\_\-turn@{my\-\_\-turn}}
+\index{my\-\_\-turn@{my\-\_\-turn}!dumbo::tic::Board@{dumbo\-::tic\-::\-Board}}
+\subsubsection[{my\-\_\-turn}]{\setlength{\rightskip}{0pt plus 5cm}dumbo\-::tic\-::\-Board\-::my\-\_\-turn}}\label{classdumbo_1_1tic_1_1_board_a1a2d7a8b6a19d97fabf37a51a31d9ff4}
+{\bfseries Initial value\-:}
+\begin{DoxyCode}
+\{\}
+  Board(\textcolor{keyword}{const} std::unordered\_set<Square, Square::Hasher>& occupied\_squares,
+        \textcolor{keywordtype}{bool} my\_turn = \textcolor{keyword}{true})
+\end{DoxyCode}
+
+
+Definition at line 59 of file board.\-h.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/travis/build/dfridovi/dumbo/include/dumbo/tic\-\_\-tac\-\_\-toe/board.\-h\item 
+/home/travis/build/dfridovi/dumbo/src/tic\-\_\-tac\-\_\-toe/board.\-cpp\end{DoxyCompactItemize}
