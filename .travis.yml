@@ -1,7 +1,7 @@
 # SSH authorization so that travis can push documentation to the repository.
 env:
   global:
-    secure:
+    secure: "FECjqj5qWVRVy9thlDnTvBu6YNjLPkjGTtDERFbzb2GVbsO8O4OkkpF5/YVhzlQaNxl4JBUkWPj6EavQP89MK0kEuITIyrrnlvb0+y1G/KQLyU5XtgL1eiEJ1dsBr223rxto30TrFfKli7CAiIL0uUcJjU8L+78teQMSxNLNCLpPs8v3rQcq6/6l+S6SIwGdyh4ACOYGr8l71QFL0KICwdrW8+0UQHADZp8W2q0QzrW5LfzM5CtNOmBWkaQuxGCKDjBAIbs9AEk0IAV/hdnMZ0fcukXDjGvRkFOmHapJEuOfPHcN/mT8TYepuqkbjbkMkH0FsTvgpgm9sH6b0cMBYtroN1wXvAhMFb6ORIQm+7dgc5xug2GHqhatDMOZhX7Mec680ward+JnRMMQUX9+vsMg3+hx/zNaMZsyPy9QsHp3fp8HCtP5Kry7qx13eQDK8zJ9bk8S5Y2En2jHQnOsUNyN++ETt4xtk7S+gSxFBbATURW/uJHu5nb7N6EsRSPv+k3gkQpVZ0WYwT4P9q8K+rStnEIt+NWQIrRNU2gxGD0duvBwBUv86LbbBD3JD0qbrAE4+QNeGDDQlgVam3AXANIXVllvM1Hv538EH7DoBFSXYU6kgwfWd6Zwhn86NkVyEGcF6XHv1ywKVIN9covfw2kL1UYPPpqC2HUxk7VdWOE="
 
 language: cpp
 
@@ -22,7 +22,7 @@ notifications:
 install:
   - echo $TRAVIS_OS_NAME
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install --yes build-essential
-    doxygen libgflags-dev libgoogle-glog-dev cmake; fi
+    doxygen libgflags-dev libgoogle-glog-dev cmake libboost-all-dev; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install python-software-properties; fi
 
 before_script:
